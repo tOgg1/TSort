@@ -1,55 +1,269 @@
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Mayacat
- * Date: 11/4/13
- * Time: 8:44 PM
- * To change this template use File | Settings | File Templates.
+ * A class containing all infeasible sorting algorithms you could possibly think of.
+ * As many algorithms as possible are done in-place, and any algorithm in this class will not have any return value.
  */
 public class Sort {
+
+    /*
+    ALGORITMHS USING BOGO-SWAP OR BOGO-INSERT
+     */
+
     /**
-     * This mindblowingly fast algorithm implements bogosort within bubblesort.
-     * The main algorithm uses bubblesort to sort the list. Every iteration the list is randomly permutated until the list where the two adjacent values have swapped place (and the rest is the same as before),
-     * is generated. The algorithm has a best case runtime of O(n^2) an average runtime of O(n!*n^2), and worst case runtime of O(infinity), yeah fuck you too.
+     * BubgoSort: This algorithm implements bubblesort, using bogosort to swap the elements.
+     * Runtime: O(n^3 * n!)
      * @param list
      */
-    public static <T extends Comparable> void goFuckYourselfSort(List<T> list){
+    public static <T extends Comparable> void bubgoSort(List<T> list){
         for(int i = 0; i < list.size()-1; i++){
             for(int j = 0; j < list.size()-1; j++){
 
                 // Generate new list
                 List<T> oldList = new ArrayList<T>();
-                for(T t : list){
-                    oldList.add(t);
-                }
+                copy(oldList, list);
 
                 if(oldList.get(j).compareTo(oldList.get(j+1)) > 0){
-                    while(!oldList.get(j).equals(list.get(j+1)) || !oldList.get(j+1).equals(list.get(j)) || !isEqual(list, oldList, 0, j-1) || !isEqual(list, oldList, j+2, list.size())){
-                        shuffle(list);
-                    }
+                    bogoSwap(oldList, list, j, j+1);
                 }
             }
         }
     }
 
+    /**
+     * BozgoboSort: This algorithm implements bozosort, using bogosort to swap the elements.
+     * Runtime: O(n * n!^2)
+     * @param list
+     * @param <T>
+     */
     public static <T extends Comparable> void bozgoboSort(List<T> list){
+        int i1, i2;
+        Random ran = new Random();
+
+        while(!isSorted(list)){
+            i1 = ran.nextInt(list.size());
+            i2 = ran.nextInt(list.size());
+
+            // Checks and resolves equality between i1 and i2;
+            i2 = i1 == i2 ? i1+1 > list.size() ? i1-1 : i1-1 < 0 ? i1+1 : i1-1 : i2;
+            List<T> olist = new ArrayList<T>();
+
+            copy(olist, list);
+
+            bogoSwap(olist, list, i1, i2);
+        }
+    }
+
+    /**
+     * A combination of stooge sort and bogosort. Uses bogosort to swap the elements in stoogeSort.
+     * Runtime: O(n^3.71 * n!)
+     * @param list
+     * @param <T>
+     */
+    public static <T extends Comparable> void stoogeboSort(List<T> list){
 
     }
 
+    /*
+    PLAIN ALGORITHMS
+     */
+
+    /**
+     * BogoSort: Takes in a list and checks if it is in order; if not, the list is randomly permutated and rechecked.
+     * Runtime: O(n * n!)
+     * @param list
+     * @param <T>
+     */
     public static <T extends Comparable> void bogoSort(List<T> list){
         while(!isSorted(list)){
             shuffle(list);
         }
     }
 
+    /**
+     * BozoSort: Takes in a list and checks if it is in order; if not, two random elements are swapped, and the list is checked again.
+     * Runtime: O(n!)
+     * @param list
+     * @param <T>
+     */
+    public static <T extends Comparable> void bozoSort(List<T> list){
+        int i1, i2;
+        Random ran = new Random();
+
+        while(!isSorted(list)){
+            i1 = ran.nextInt(list.size());
+            i2 = ran.nextInt(list.size());
+            swap(list, i1, i2);
+        }
+    }
+
+    /**
+     * Entry point for plain stoogesort
+     * @param list
+     * @param <T>
+     */
+    public static <T extends Comparable> void stoogeSort(List<T> list){
+        stoogeSort(list, 0, list.size()-1);
+    }
+
+    /**
+     * StoogeSort: The list is input with two indexes, if the element at index2 is larger than the element at index1, the elements are swapped.
+     * The first two thirds of the list is then sorted using... you guessed it: StoogeSort. Then the last two thirds of the list is sorted using StoogeSort, and then the first thirds again.
+     * Runtime: O(n^(log(3)/log(1.5)) ~ O(n^2.71)
+     * @param list
+     * @param <T>
+     */
+    public static <T extends Comparable> void stoogeSort(List<T> list, int index1, int index2){
+        if(list.get(index2).compareTo(list.get(index1)) < 0){
+            swap(list, index1, index2);
+        }
+
+        if(index2 - index1 >= 2){
+            int newindex = (index2 - index1 + 1)/3;
+            stoogeSort(list, index1, index2-newindex);
+            stoogeSort(list, index1 + newindex, index2);
+            stoogeSort(list, index1, index2-newindex);
+        }
+    }
+
+    /**
+     * BubbleSort: Iterates through the list n^2 times, swapping two adjacent elements if element j+1 is smaller than element j.
+     * This implements the effect of checking every item with every other item.
+     * Runtime: O(n^2)
+     * @param list
+     * @param <T>
+     */
+    public static <T extends Comparable> void bubbleSort(List<T> list){
+        for (int i = 0; i < list.size()-1; i++) {
+            for (int j = 0; j < list.size()-1; j++) {
+                if(list.get(j).compareTo(list.get(j+1)) > 0){
+                    swap(list, j, j+1);
+                }
+            }
+        }
+    }
+
+    /**
+     * For every element in the list, the element is moved "left" until it encounters an item smaller than itself.
+     * @param list
+     * @param <T>
+     */
+    public static <T extends Comparable> void insertionSort(List<T> list){
+        for (int i = 1; i < list.size(); i++) {
+            int j = i;
+
+            while(list.get(j).compareTo(list.get(i)) > 0 && j > 0){
+                j--;
+            }
+            
+            if(j != i){
+                insert(list, j, i);
+            }
+        }
+    }
+
+    /**
+     * Plain and simple selectionSort
+     * @param list
+     * @param <T>
+     */
+    public static <T extends Comparable> void selectionSort(List<T> list){
+        int min;
+        for (int i = 0; i < list.size()-1; i++) {
+            min = i;
+
+            for (int j = i+1; j < list.size(); j++) {
+                min = list.get(j).compareTo(list.get(min)) < 0 ? j : min;
+            }
+
+            if(i != min){
+                swap(list, i, min);
+            }
+        }
+    }
+
+    /*
+    HELPER METHODS BELOW
+     */
+    /**
+     * Shuffles list2 until list2 is the same as list1, just with the element at index1 swapped with the element at index2.
+     * @param list1
+     * @param list2
+     * @param index1
+     * @param index2
+     * @param <T>
+     */
+    public static <T extends Comparable> void bogoSwap(List<T> list1, List<T> list2, int index1, int index2){
+        if(index1 > index2){
+            int temp = index2;
+            index2 = index1;
+            index1 = temp;
+        }
+
+        if(index2-index1 == 1){
+            while(!list1.get(index1).equals(list2.get(index2)) || !list1.get(index2).equals(list2.get(index1)) || !isEqual(list2, list1, 0, index1) || !isEqual(list2, list1, index2+1, list2.size())){
+                shuffle(list2);
+            }
+        }
+        else{
+            while(!list1.get(index1).equals(list2.get(index2)) || !list1.get(index2).equals(list2.get(index1)) || !isEqual(list2, list1, 0, index1) || !isEqual(list2, list1, index1+1, index2) || !isEqual(list2, list1, index2+1, list2.size())){
+                shuffle(list2);
+            }
+        }
+    }
+
+    /**
+     * Copies a list to another list
+     * @param target
+     * @param copyable
+     * @param <T>
+     */
+    public static <T extends Comparable> void copy(List<T> target, List<T> copyable){
+        target.addAll(copyable);
+    }
+
+    /**
+     * Inserts element at index2 into index1, all elements between index1 and index2 is shifted one place to the right, and the element at index2 is deleted.
+     * @param list
+     * @param index1
+     * @param index2
+     * @param <T>
+     */
+    public static <T extends Comparable> void insert(List<T> list, int index1, int index2){
+        T element = list.get(index2);
+        list.remove(index2);
+        list.add(index1, element);
+    }
+
+    /**
+     * Swaps the element at index1 with the element at index2
+     * @param list
+     * @param index1
+     * @param index2
+     * @param <T>
+     */
+    public static <T extends Comparable> void swap(List<T> list, int index1, int index2){
+        T temp = list.get(index1);
+        list.set(index1, list.get(index2));
+        list.set(index2, temp);
+    }
+
+    /**
+     * Takes a list and shuffles it
+     * @param list
+     * @param <T>
+     */
     public static <T extends Comparable> void shuffle(List<T> list){
         Collections.shuffle(list);
     }
 
+
+    /**
+     * Checks of a list is sorted
+     * @param list
+     * @param <T>
+     * @return
+     */
     public static <T extends Comparable> boolean isSorted(List<T> list){
         Comparable cur = list.get(0);
         for (Comparable comparable : list) {
@@ -61,7 +275,18 @@ public class Sort {
         return true;
     }
 
+    /**
+     * Checks if two lists are equal from minIndex to maxIndex
+     * @param list
+     * @param olist
+     * @param minIndex
+     * @param maxIndex
+     * @param <T>
+     * @return
+     */
     public static <T extends Comparable> boolean isEqual(List<T> list, List<T> olist, int minIndex, int maxIndex){
+        if(maxIndex < 0)
+            return true;
         if(minIndex == maxIndex)
             return true;
         for (int i = minIndex; i < maxIndex; i++){
@@ -73,26 +298,89 @@ public class Sort {
     }
 
     public static void main(String[] args){
-        long one = new Date().getTime();
-        List<Integer> ints = new ArrayList<Integer>();
-        ints.add(2);
-        ints.add(626);
-        ints.add(23);
-        ints.add(24);
-        ints.add(624);
-        ints.add(324);
-        ints.add(124);
-        ints.add(1524);
-        ints.add(424);
-        ints.add(3);
-        ints.add(824);
+        Random ran = new Random();
+        int numCount = 5000;
 
-        goFuckYourselfSort(ints);
-        System.out.println(isSorted(ints));
-        for (Integer anInt : ints) {
-            System.out.println(""+anInt);
+        List<Integer> ints = new ArrayList<Integer>();
+
+        for (int i = 0; i < numCount; i++) {
+            ints.add(ran.nextInt(0xFFFF));
         }
-        long two = new Date().getTime();
-        System.out.println("Time elapsed: " + (two-one)*1e-3 + " sekunder.");
+
+
+        testBubbleSort(ints);
+        testInsertionSort(ints);
+        testSelectionSort(ints);
+
+        /*one = System.currentTimeMillis();
+        bubgoSort(ints);
+        two = System.currentTimeMillis();
+        System.out.println(isSorted(ints));
+        System.out.println("goFuckYourSelfSort: Time elapsed: " + (two-one)*1e-3 + " sekunder."); */
+
+        //shuffle(ints);
+
+        /*one = System.currentTimeMillis();
+        bogoSort(ints);
+        two = System.currentTimeMillis();
+        System.out.println(isSorted(ints));
+        System.out.println("bogosort: Time elapsed: " + (two-one)*1e-3 + " sekunder."); */
+
+        //shuffle(ints);
+
+        /*one = System.currentTimeMillis();
+        bozgoboSort(ints);
+        two = System.currentTimeMillis();
+        System.out.println(isSorted(ints));
+        System.out.println("bozgobosort: Time elapsed: " + (two-one)*1e-3 + " sekunder.");  */
+
+        //shuffle(ints);
+
+        /*one = System.currentTimeMillis();
+        stoogeSort(ints);
+        System.out.println(isSorted(ints));
+        two = System.currentTimeMillis();
+        System.out.println("stoogesort: Time elapsed: " + (two-one)*1e-3 + " sekunder.");*/
+
+        //shuffle(ints);
     }
+
+    public static <T extends Comparable> void testBubbleSort(List<T> list){
+        long one = System.nanoTime();
+        bubbleSort(list);
+        long two = System.nanoTime();
+        System.out.println(isSorted(list));
+        System.out.println("BubbleSort - Time elapsed: " + (two-one)*1e-9 + " sekunder.");
+    }
+
+    public static <T extends Comparable> void testInsertionSort(List<T> list){
+        long one = System.nanoTime();
+        insertionSort(list);
+        long two = System.nanoTime();
+        System.out.println(isSorted(list));
+        System.out.println("InsertionSort - Time elapsed: " + (two-one)*1e-9 + " sekunder.");
+    }
+
+    public static <T extends Comparable> void testSelectionSort(List<T> list){
+        long one = System.nanoTime();
+        selectionSort(list);
+        long two = System.nanoTime();
+        System.out.println(isSorted(list));
+        System.out.println("SelectionSort - Time elapsed: " + (two-one)*1e-9 + " sekunder.");
+
+    }
+
+    public static <T extends Comparable>void testBubgoSort(List<T> list){
+
+    }
+
+    public static <T extends Comparable> void testBozbogoSort(List<T> list){
+
+    }
+
+    public static <T extends Comparable> void testBogoSort(List<T> list){
+
+    }
+    
+
 }
