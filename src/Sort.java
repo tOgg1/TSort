@@ -2,7 +2,7 @@ import java.util.*;
 
 /**
  * A class containing all infeasible sorting algorithms you could possibly think of.
- * As many algorithms as possible are done in-place, and any algorithm in this class will not have any return value.
+ * As many algorithms as possible are done in-place.
  */
 public class Sort {
 
