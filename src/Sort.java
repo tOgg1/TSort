@@ -204,12 +204,14 @@ public class Sort {
         }
 
         if(index2-index1 == 1){
-            while(!list1.get(index1).equals(list2.get(index2)) || !list1.get(index2).equals(list2.get(index1)) || !isEqual(list2, list1, 0, index1) || !isEqual(list2, list1, index2+1, list2.size())){
+            while(!list1.get(index1).equals(list2.get(index2)) || !list1.get(index2).equals(list2.get(index1)) ||
+                  !isEqual(list2, list1, 0, index1) || !isEqual(list2, list1, index2+1, list2.size())) {
                 shuffle(list2);
             }
-        }
-        else{
-            while(!list1.get(index1).equals(list2.get(index2)) || !list1.get(index2).equals(list2.get(index1)) || !isEqual(list2, list1, 0, index1) || !isEqual(list2, list1, index1+1, index2) || !isEqual(list2, list1, index2+1, list2.size())){
+        } else {
+            while(!list1.get(index1).equals(list2.get(index2)) || !list1.get(index2).equals(list2.get(index1)) ||
+                  !isEqual(list2, list1, 0, index1) || !isEqual(list2, list1, index1+1, index2) ||
+                  !isEqual(list2, list1, index2+1, list2.size())) {
                 shuffle(list2);
             }
         }
@@ -270,7 +272,7 @@ public class Sort {
     public static <T extends Comparable> boolean isSorted(List<T> list){
         Comparable cur = list.get(0);
         for (Comparable comparable : list) {
-            if(comparable.compareTo(cur) < 0){
+            if(comparable.compareTo(cur) < 0) {
                 return false;
             }
             cur = comparable;
@@ -306,7 +308,7 @@ public class Sort {
 
     public static void endTimer(String name){
         two = System.nanoTime();
-        System.out.println(name + "- Time elapsed: " + (two-one)*1e-9 + " sekunder.");
+        System.out.println(name + "- Time elapsed: " + (two-one)*1e-9 + " seconds.");
     }
 
     public static void main(String[] args){
