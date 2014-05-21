@@ -10,6 +10,9 @@ public class Sort {
     ALGORITMHS USING BOGO-SWAP OR BOGO-INSERT
      */
 
+    public static long one = 0;
+    public static long two = 0;
+
     /**
      * BubgoSort: This algorithm implements bubblesort, using bogosort to swap the elements.
      * Runtime: O(n^3 * n!)
@@ -297,9 +300,18 @@ public class Sort {
         return true;
     }
 
+    public static void startTimer(){
+        one = System.nanoTime();
+    }
+
+    public static void endTimer(String name){
+        two = System.nanoTime();
+        System.out.println(name + "- Time elapsed: " + (two-one)*1e-9 + " sekunder.");
+    }
+
     public static void main(String[] args){
         Random ran = new Random();
-        int numCount = 5000;
+        int numCount = 10;
 
         List<Integer> ints = new ArrayList<Integer>();
 
@@ -309,69 +321,43 @@ public class Sort {
 
 
         testBubbleSort(ints);
+        shuffle(ints);
+
         testInsertionSort(ints);
+        shuffle(ints);
+
         testSelectionSort(ints);
+        shuffle(ints);
 
-        /*one = System.currentTimeMillis();
-        bubgoSort(ints);
-        two = System.currentTimeMillis();
-        System.out.println(isSorted(ints));
-        System.out.println("goFuckYourSelfSort: Time elapsed: " + (two-one)*1e-3 + " sekunder."); */
-
-        //shuffle(ints);
-
-        /*one = System.currentTimeMillis();
-        bogoSort(ints);
-        two = System.currentTimeMillis();
-        System.out.println(isSorted(ints));
-        System.out.println("bogosort: Time elapsed: " + (two-one)*1e-3 + " sekunder."); */
-
-        //shuffle(ints);
-
-        /*one = System.currentTimeMillis();
-        bozgoboSort(ints);
-        two = System.currentTimeMillis();
-        System.out.println(isSorted(ints));
-        System.out.println("bozgobosort: Time elapsed: " + (two-one)*1e-3 + " sekunder.");  */
-
-        //shuffle(ints);
-
-        /*one = System.currentTimeMillis();
-        stoogeSort(ints);
-        System.out.println(isSorted(ints));
-        two = System.currentTimeMillis();
-        System.out.println("stoogesort: Time elapsed: " + (two-one)*1e-3 + " sekunder.");*/
-
-        //shuffle(ints);
+        testBubgoSort(ints);
     }
 
     public static <T extends Comparable> void testBubbleSort(List<T> list){
-        long one = System.nanoTime();
+        startTimer();
         bubbleSort(list);
-        long two = System.nanoTime();
         System.out.println(isSorted(list));
-        System.out.println("BubbleSort - Time elapsed: " + (two-one)*1e-9 + " sekunder.");
+        endTimer("BubbleSort");
     }
 
     public static <T extends Comparable> void testInsertionSort(List<T> list){
-        long one = System.nanoTime();
+        startTimer();
         insertionSort(list);
-        long two = System.nanoTime();
         System.out.println(isSorted(list));
-        System.out.println("InsertionSort - Time elapsed: " + (two-one)*1e-9 + " sekunder.");
+        endTimer("InsertionSort");
     }
 
     public static <T extends Comparable> void testSelectionSort(List<T> list){
-        long one = System.nanoTime();
+        startTimer();
         selectionSort(list);
-        long two = System.nanoTime();
         System.out.println(isSorted(list));
-        System.out.println("SelectionSort - Time elapsed: " + (two-one)*1e-9 + " sekunder.");
-
+        endTimer("SelectionSort");
     }
 
     public static <T extends Comparable>void testBubgoSort(List<T> list){
-
+        startTimer();
+        bubgoSort(list);
+        System.out.println(isSorted(list));
+        endTimer("BubgoSort");
     }
 
     public static <T extends Comparable> void testBozbogoSort(List<T> list){
