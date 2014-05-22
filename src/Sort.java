@@ -67,6 +67,51 @@ public class Sort {
 
     }
 
+
+    /*
+     OTHER SLOW ALGORITHMS
+     */
+
+    /**
+     * Takes in a list and checks if it is sorted. If not, it sleeps for a bit and checks again. In theory,
+     * alpha particles entering the computer will eventually flip enough bits to make sure the list is sorted.
+     * @param list
+     * @param <T>
+     */
+    public static <T extends Comparable> void alphaParticleSort(List<T> list, long sleepPeriod){
+        while(!isSorted(list)){
+            /*Sleep a bit*/
+            long a, b;
+            a = System.currentTimeMillis();
+            while((System.currentTimeMillis() - a) < sleepPeriod){
+                // Lets do something else for a bit
+
+                int[] primes = new int[list.size()];
+                for (int i = 2; i < list.size(); i++) {
+                    primes[i] = i;
+                }
+
+                for (int i = 0; i < list.size(); i++) {
+                    int j = primes[i];
+
+                    if(j < 2 || j == -1)
+                        continue;
+
+                    for (int k = j; k < list.size(); k += j) {
+                        primes[k] = -1;
+                    }
+                }
+
+                // Print out all the awesome prime numbers
+                for (int i = 0; i < list.size(); i++) {
+                    if(primes[i] > 2 && primes[i] != -1){
+                        System.out.println("Prime number: " + i);
+                    }
+                }
+            }
+        }
+    }
+
     /*
     PLAIN ALGORITHMS
      */
